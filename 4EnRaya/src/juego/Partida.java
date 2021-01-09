@@ -5,20 +5,31 @@ import java.net.*;
 
 public class Partida {
 
-	private Tablero t;
+	private int columna;
 	private Socket j1;
 	private Socket j2;
 	private int ganador;
+	private int turno=1;
+	private Tablero t;
 	
-	public Partida(Socket s1, Socket s2) {
-		this.t=new Tablero();
-		this.j1=s1;
-		this.j2=s2;
+	public Partida(Socket s) {
+		this.columna=9;
+		this.j1=s;
+		this.j2=null;
 		this.ganador=0;
+		this.t=new Tablero();
+	}
+	
+	public void añadirJugador(Socket s) {
+		this.j2=s;		
 	}
 	
 	public boolean terminado() {
-		return t.terminado();
+		return this.t.terminado();
+	}
+	
+	public Socket getJugador2() {
+		return j2;
 	}
 	
 	public int getGanador() {
@@ -28,38 +39,52 @@ public class Partida {
 	public void jugar() {
 		System.out.println("entra");
 		try (
-			ObjectInputStream in1= new ObjectInputStream(j1.getInputStream());
-			ObjectOutputStream out1= new ObjectOutputStream(j1.getOutputStream());
-			ObjectInputStream in2= new ObjectInputStream(j2.getInputStream());
-			ObjectOutputStream out2= new ObjectOutputStream(j2.getOutputStream());)
+			DataInputStream in1= new DataInputStream(j1.getInputStream());
+			DataOutputStream out1= new DataOutputStream(j1.getOutputStream());
+			DataInputStream in2= new DataInputStream(j2.getInputStream());
+			DataOutputStream out2= new DataOutputStream(j2.getOutputStream());)
 				
 		{
 			boolean fin=false;
 			
 			System.out.println("antes de bucle");
 			
+			out1.write(1);
+			out2.write(2);
+			out1.flush();
+			out2.flush();
+			
+			out1.write(columna);
 			while(!fin) {
 				
-				t.setTurno(1);
-				out1.writeObject(t);
-				t=(Tablero) in1.readObject();
+				this.turno=1;
+				System.out.println("Pone Jug 1");
+				columna=in1.read();
 				
-				
+				this.t.meterFicha(columna, this.turno);
+
 				fin=terminado();
 				
 				if(!fin){
-					t.setTurno(2);
+					this.turno=2;
 					
-					out2.writeObject(t);
-					t=(Tablero) in2.readObject();
+					out2.write(columna);
+					System.out.println("Pone Jug 2");
+					columna=in2.read();
+					this.t.meterFicha(columna, this.turno);
 					
 					fin=terminado();
+					out1.write(columna);
 				}		
 			}
-			this.ganador=t.getTurno();
+			this.ganador=this.turno;
+			if(this.turno==1) {
+				out2.write(columna);
+			}
+			System.out.println("Fin del juego!!! Ganador: Jugador "+this.ganador);
 			
 			
-		}catch(IOException | ClassNotFoundException e) {
+		}catch(IOException e) {
 			System.out.println("error");
 			e.printStackTrace();
 			
