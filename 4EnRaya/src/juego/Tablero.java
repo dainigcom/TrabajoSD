@@ -4,8 +4,8 @@ import java.io.Serializable;
 public class Tablero implements Serializable{
 
 	private int[][] tablero;
-	private int turno;
 	
+	//constructor que inicia la matriz del tablero
 	public Tablero() {
 		this.tablero = new int[6][7];
 		for (int i=0; i<6; i++){
@@ -13,17 +13,10 @@ public class Tablero implements Serializable{
 				 this.tablero[i][j]=0;
 			 }
 		}
-		this.turno=1;
+
 	}
 	
-	public int getTurno() {
-		return this.turno;
-	}
-	
-	public void setTurno(int turno) {
-		this.turno=turno;
-	}
-	
+	//muestra por pantalla el tablero
 	public void mostrarTablero() {
 		for (int i=0; i<6; i++){
 			System.out.print("|");
@@ -35,6 +28,7 @@ public class Tablero implements Serializable{
 		}
 	}
 	
+	//comprueba si la partida ha terminado ya sea por victoria de algun jugador o po haber completado todo el tablero
 	public boolean terminado() {
 		boolean lleno=true;
 		int i=0;
@@ -52,25 +46,29 @@ public class Tablero implements Serializable{
 		}
 	}
 	
+	//comprueba si alguien ha ganado
 	public boolean win() {
 		boolean victoria=false;
 		try {
+			//se crean los objetos para comprobar, que son clases que extienden thread para poder ejecutarse concurrentemente y ahorrar tiempo en la medida de lo posible
 			ComprobarVerticales cv= new ComprobarVerticales(this.tablero);
 			ComprobarHorizontales ch= new ComprobarHorizontales(this.tablero);
 			ComprobarDiagonalesDcha cdd= new ComprobarDiagonalesDcha(this.tablero);
 			ComprobarDiagonalesIzq cdi= new ComprobarDiagonalesIzq(this.tablero);
 			
-			
+			//se inician
 			cv.start();
 			ch.start();
 			cdd.start();
 			cdi.start();
 
+			//esperan a terminar todos
 			cv.join();
 			ch.join();
 			cdd.join();
 			cdi.join();
 			
+			//si ha habido 4 en raya en cualquier direccion devuelve true
 			victoria= cv.getWin()||ch.getWin()||cdd.getWin()||cdi.getWin();
 		}catch(InterruptedException e){
 			e.printStackTrace();
@@ -78,6 +76,7 @@ public class Tablero implements Serializable{
 		return victoria;
 	}
 	
+	//mete una ficha del jugador correspondiente en la columna indicada, cae hasta la fila mas baja que no tenga ficha
 	public boolean meterFicha(int columna,int numJug) {
 		
 		if(this.tablero[0][columna]!=0) {

@@ -11,10 +11,12 @@ public class ComprobarHorizontales extends Thread{
 		this.win=false;
 	}
 	
+	//devuelve si hay 4 en raya
 	public boolean getWin() {
 		return this.win;
 	}
 	
+	//comprueba si hay 4 en raya en cualquier horizontal
 	public void run() {
 		int i=0;
 		int e=0;

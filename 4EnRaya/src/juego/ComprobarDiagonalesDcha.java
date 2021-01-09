@@ -11,10 +11,12 @@ public class ComprobarDiagonalesDcha extends Thread{
 		this.win=false;
 	}
 	
+	//devuelve si hay 4 en raya
 	public boolean getWin() {
 		return this.win;
 	}
 	
+	//comprueba si hay 4 en raya en cualquier diagonal desde la derecha
 	public void run() {
 		int i=3;
 		int e=1;

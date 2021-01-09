@@ -37,7 +37,6 @@ public class Partida {
 	}
 	
 	public void jugar() {
-		System.out.println("entra");
 		try (
 			DataInputStream in1= new DataInputStream(j1.getInputStream());
 			DataOutputStream out1= new DataOutputStream(j1.getOutputStream());
@@ -47,18 +46,18 @@ public class Partida {
 		{
 			boolean fin=false;
 			
-			System.out.println("antes de bucle");
 			
+			//manda el numero correspondiente a cada jugador
 			out1.write(1);
 			out2.write(2);
 			out1.flush();
 			out2.flush();
 			
+			//columna 9 mandada por temas de diseño, irrelevante en el juego
 			out1.write(columna);
 			while(!fin) {
 				
 				this.turno=1;
-				System.out.println("Pone Jug 1");
 				columna=in1.read();
 				
 				this.t.meterFicha(columna, this.turno);
@@ -69,7 +68,6 @@ public class Partida {
 					this.turno=2;
 					
 					out2.write(columna);
-					System.out.println("Pone Jug 2");
 					columna=in2.read();
 					this.t.meterFicha(columna, this.turno);
 					
@@ -81,11 +79,10 @@ public class Partida {
 			if(this.turno==1) {
 				out2.write(columna);
 			}
-			System.out.println("Fin del juego!!! Ganador: Jugador "+this.ganador);
+			System.out.println("FIN DEL JUEGO!!! GANADOR: JUGADOR "+this.ganador);
 			
 			
 		}catch(IOException e) {
-			System.out.println("error");
 			e.printStackTrace();
 			
 		}

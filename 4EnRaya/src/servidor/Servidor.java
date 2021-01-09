@@ -12,9 +12,10 @@ import java.util.concurrent.Executors;
 import juego.Partida;
 import juego.Sala;
 
+//El servidor permite conectar jugadores de dos en dos, genera salas conforme van llegando jugadores y cuando se completa una sala con los dos jugadores empezara su partida
 public class Servidor {
-	
 	public static void main(String[] args) {
+		//esta pool de hilos permite la ejecución simultánea de varias salas
 		ExecutorService pool= Executors.newCachedThreadPool();
 		ServerSocket server = null;
 		Socket s = null;
@@ -30,10 +31,8 @@ public class Servidor {
 				}catch(IOException e) {
 					e.printStackTrace();
 				}
-				
 			}
-			
-		} catch(IOException e) {
+		}catch(IOException e) {
 			e.printStackTrace();
 		}finally {
 			pool.shutdown();
