@@ -38,6 +38,7 @@ public class Jugador {
 					if(columna>=0 && columna<7) {
 						t.meterFicha(columna, numContrario);
 					}
+					System.out.println("Es tu turno!");
 					System.out.println("El tablero esta así: ");
 					t.mostrarTablero();
 					//con este if vemos que si ha ganado el jugador contrario en el turno anterior, muestra mensaje de derrota y si no sigue el turno
@@ -47,12 +48,21 @@ public class Jugador {
 						Scanner reader = new Scanner(System.in);
 						columna = reader.nextInt();
 						
+						//comprobar si es una columna válida
+						while(columna<0 || columna>=7) {
+							System.out.println("Por favor introduce un valor entre 0 y 6");
+							columna = reader.nextInt();
+						}
+						
+						
 						t.meterFicha(columna, numJug);
 						
 						out.write(columna);
 						//si el ha ganado con su movimiento muestra mensaje de victoria
 						if(t.terminado()) {
 							System.out.println("HAS GANADO!!");
+						}else {
+							System.out.println("Espera tu turno...");
 						}
 					}else {
 						System.out.println("HAS PERDIDO, GANADOR JUGADOR "+numContrario);
